@@ -1,0 +1,528 @@
+FORMAT: 1A
+HOST: https://hznj-dev.gagogroup.cn/api/v4
+
+# Group 地块（记得加tokenx）
+
+## 地块统计 [/lands/statistic]
+
+### 统计所有地块的数量面积 [GET]
+
++ Response 200 (application/json)
+
+            {
+                "count": 1068,
+                "area": 3022.8                       
+            }
+
+## 地块查询 [/lands{?id,name,crop,minArea,maxArea}]
+
+### 根据参数查询地块 [GET]
+
++ Parameters
+    + id: 1 (number,optional) - 地块id
+    + name: 'land1' (string,optional) - 地块名称
+    + crop: '玉米' (string,optional) - 作物名称
+    + minArea: 10 (number,optional) - 最小面积
+    + maxArea: 50 (number,optional) - 最大面积
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "lands": [
+                    {
+                        "id": "586",
+                        "geojson": {...}
+                    },
+                     {
+                        "id": "587",
+                        "geojson": {...}
+                    }
+                ],
+                "code": 200
+            }
+        }
+
+## 地块服务 [/lands/map/{z}/{x}/{y}]
+
+### 地块服务 [GET]
+
++ Parameters
+    + z: 7 (number,optional) - z 坐标
+    + x: 15 (number,optional) - x 坐标
+    + y: 22 (number,optional) - y 坐标
+
++ Response 200 (application/json)
+返回空或地块信息
+
+
+## 地块CRUD [/lands/{landId}]
+
+### 查询地块信息 [GET]
+
++ Parameters
+    + landId: 1 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+                "id": 1,
+                "name": "land1",
+                "serialNum": "HZ0001",      // 地块编号
+                "area": 100,                // 面积
+                "perimeter": 280,           // 周长
+                "createdPerson": "张三",      // 创建人
+                "createdDate": "2018-06-15T16:00:00.000Z",  // 创建时间
+                "crop": "玉米",              // 作物
+                "department": "农田水利",    // 所属学院
+                "memo": "坡向不好",         // 地块备注
+                "geojson": "{...}"
+        }
+
+### 创建地块 [POST]
+
++ Request (application/json)
+
+        {
+            "area": 100,                // 面积
+            "perimeter": 280,           // 周长
+            "createdPerson": "张三",      // 创建人
+            "geojson": {"type": "Feature", "geometry": {"type": "Point", "coordinates": [125.6, 10.1] }, "properties": {"name": "Dinagat Islands"} },  // geojson
+            "crop":"玉米",
+            "department":"文学院",
+            "name":"地块100",
+            "memo":"肥沃"
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 601,
+                "code": 200
+            }
+        }
+
+### 修改地块信息 [PUT]
+
++ Parameters
+    + landId: 3 (number) - 地块id
+
++ Request (application/json)
+
+        {
+            "name": "land1",
+            "crop": "玉米",              // 作物
+            "department": "农田水利",    // 所属学院
+            "memo": "坡向不好"        // 地块备注
+        }
+
+
++ Response 200 (application/json)
+        {
+            "data": {
+                "land": {
+                    "id": 3,
+                    "serialNum": "HZ0003",      // 地块编号
+                    "name": "land1",
+                    "area": 100,                // 面积
+                    "perimeter": 280,           // 周长
+                    "createdPerson": "张三",      // 创建人
+                    "createdDate": "2018-06-20T16:00:00.000Z",  // 创建时间
+                    "crop": "玉米",              // 作物
+                    "department": "农田水利",    // 所属学院
+                    "memo": "坡向不好",         // 地块备注
+                    "geojson": "{...}"
+                },
+                "code": 200
+            }
+        }
+
+### 删除地块 [DELETE]
+
++ Parameters
+    + landId: 1 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 1,
+                "code": 200
+            }
+        }
+
+
+# Group 农事
+
+## 农事 [/farmworks/land/{landId}]
+
+### 查询某个地块的所有农事 [GET]
+
++ Parameters
+    + landId: 2 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "land": {
+                    "id": "2",
+                    "serialNum": "HN0002",
+                    "name": null,
+                    "area": "812.897493869",
+                    "perimeter": "117.145853034",
+                    "createdPerson": null,
+                    "createdDate": null,
+                    "crop": null,
+                    "department": null,
+                    "memo": null,
+                    "geojson": "{...}"
+                },
+                "farmworks": [
+                    {
+                        "id": "4",
+                        "type": "整地",
+                        "workingAt": "2018-06-18T16:00:00.000Z",
+                        "completedBy": "张三",
+                        "landId": 2,
+                        "memo": "育苗顺利。"
+                    },
+                    {
+                        "id": "5",
+                        "type": "整地",
+                        "workingAt": "2018-06-18T16:00:00.000Z",
+                        "completedBy": "张三",
+                        "landId": 2,
+                        "memo": null
+                    }
+                ],
+                "code": 200
+            }
+        }
+
+
+## 农事CRUD [/farmworks/{id}]
+
+### 创建农事 [POST]
+
++ Request (application/json)
+
+        {
+            "type": "播种",                         //农事类型
+            "workingAt": "2018-05-01",             //作业时间 
+            "landId": [1, 2, 3],             //作业地块
+            "completedBy": "张三",                  //完成人
+            "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "ids": [ 12, 13, 14 ],
+                "code": 200
+            }
+        }
+
+### 修改农事 [PUT]
+界面没有修改图标，无法确定修改规则，是单条还是按地块，暂时是按单条
+
++ Parameters
+    + id: 1 (number) - 农事id
+
++ Request (application/json)
+
+        {
+            "type": "播种",                         //农事类型
+            "workingAt": "2018-05-01",             //作业时间 
+            "landId": 1,                           //作业地块
+            "completedBy": "张三",                  //完成人
+            "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "farmwork": {
+                    "id": 1,
+                    "type": "播种",                         //农事类型
+                    "workingAt": "2018-05-01",             //作业时间 
+                    "landId": 1,                           //作业地块
+                    "completedBy": "张三",                  //完成人
+                    "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+                },
+                "code": 200
+            }
+        }
+
+
+### 删除农事 [DELETE]
+
++ Parameters
+    + id: 1 (number) - 农事id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 1,
+                "code": 200
+            }
+        }
+
+## 根据条件查询农事 [/farmworks{?type,crop,completedBy,start,end}]
+
+### 按参数查询农事 [GET]
+
++ Parameters
+    + type: "播种" (string,optional)         - 农事类型
+    + crop: '玉米' (string,optional)         - 作物名称
+    + completedBy: '张三' (string,optional)  - 地块名称
+    + start: "2018-05-01" (string,optional)   - 开始时间
+    + end: "2018-06-01" (string,optional)     - 结束时间
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "landIds": [ 1, 13, 22 ],
+                "code": 200
+            }
+        }
+
+
+# Group 用户管理
+
+### 根据 id 查找用户信息 [GET /users/{id}]
+
++ Parameters
+    + id: 2 (number) - 用户 id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "user": {
+                    "id": "2",
+                    "username": "15122229200",
+                    "realname": "李碧阳",
+                    "roleId": 2,
+                    "jobNumber": "101010",
+                    "gender": "女",
+                    "contactInfo": "15122229200",
+                    "college": "工学院"
+                },
+                "code": 200
+            }
+        }
+
+### 得到老师列表（也可模糊查询） [GET /users/teachers?query=xxx]
+
++ Parameters
+    + query: "清华" (string,optional)      - 查询内容（也可不填参数）
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "users": [
+                    {
+                        "id": "6",
+                        "username": "15910000003",
+                        "realname": "lily",
+                        "roleId": 1,
+                        "jobNumber": "1236",
+                        "gender": "男",
+                        "contactInfo": "15910000000",
+                        "college": "清华"
+                    },
+                    {
+                        "id": "4",
+                        "username": "15910000004",
+                        "realname": "wangwu",
+                        "roleId": 1,
+                        "jobNumber": "1235",
+                        "gender": "男",
+                        "contactInfo": "15910000000",
+                        "college": "清华"
+                    }
+                ],
+                "code": 200
+            }
+        }
+
+### 得到学生列表（也可模糊查询） [GET /users/students?query=xxx]
+
++ Parameters
+    + query: "清华" (string,optional)      - 查询内容（也可不填参数）
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "users": [
+                    {
+                        "id": "3",
+                        "username": "15120009200",
+                        "realname": "张三三",
+                        "roleId": 2,
+                        "jobNumber": "1234",
+                        "gender": "女",
+                        "contactInfo": "15120009200",
+                        "college": "北师大"
+                    }
+                ],
+                "code": 200
+            }
+        }
+
+### 登录 [POST /users/login]
+
+用联系方式登录，默认 username 也是联系方式。
+tokenx 是华中农机的；token 是佳格的，气象等接口调用会用到。
+
++ Request (application/json)
+
+        {
+            "username": "admin",
+            "password": 123456
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "username": "admin",
+                "tokenx": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpYXQiOjE1MzAwMDAzMzAsImV4cCI6MTUzMDYwNTEzMCwiaXNzIjoiaHVhemhvbmdub25namkiLCJzdWIiOiJoem5qLWxvZ2luIn0.-MZOgF2VKfmpaxk9zBqfgeaXT-aPqV3cKv366izniM4",
+                "token": "8b5b5b5999e4944930bc95c9509d7b60105f41ef09ba213f95f67a30f849aefac981e03bbce6892798056ebff0841b9e",
+                "code": 200
+            }
+        }
+
+### 添加教师用户 [POST /users/teachers]
+
++ Request (application/json)
+
+        {
+            "realname": "frank",
+            "jobNumber": "JG1024",
+            "gender": "男",
+            "contactInfo": "15099990000",
+            "college": "计算机学院"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 13,
+                "code": 200
+            }
+        }
+
+### 添加学生用户 [POST /users/students]
+
++ Request (application/json)
+
+        {
+            "realname": "frank",
+            "jobNumber": "JG1024",
+            "gender": "男",
+            "contactInfo": "15099990000",
+            "college": "计算机学院"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 13,
+                "code": 200
+            }
+        }
+
+### 修改用户基本信息 [PUT /users/{id}]
+
++ Parameters
+    + id: 3 (number) - 用户 id
+
++ Request (application/json)
+
+        {
+            "realname": "张三三",
+            "jobNumber": 1234,
+            "gender": "女",
+            "contactInfo": "15120009200",
+            "college": "北师大"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "user": {
+                    "id": "3",
+                    "username": "15120009200",
+                    "realname": "张三三",
+                    "roleId": 2,
+                    "jobNumber": 1234,
+                    "gender": "女",
+                    "contactInfo": "15120009200",
+                    "college": "北师大"
+                },
+                "code": 200
+            }
+        }
+
+### 修改密码 [PUT /users/{id}/password]
+暂时用不到
+
++ Parameters
+    + id: 3 (number) - 用户 id
+
++ Request (application/json)
+
+        {
+            "password": "123456"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "user": {
+                    "id": "3",
+                    "username": "15120009200",
+                    "realname": "张三三",
+                    "roleId": 2,
+                    "jobNumber": 1234,
+                    "gender": "女",
+                    "contactInfo": "15120009200",
+                    "college": "北师大"
+                },
+                "code": 200
+            }
+        }
+
+### 删除用户 [DELETE /users/{id}]
+
++ Parameters
+    + id: 2 (number) - 用户 id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 2,
+                "code": 200
+            }
+        }
+
+
+
+

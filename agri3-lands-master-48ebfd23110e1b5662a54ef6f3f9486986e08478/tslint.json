@@ -1,0 +1,15 @@
+{
+  "extends": ["@gago/tslint-config"],
+  "rules": {
+    "match-default-export-name": false,
+    "max-file-line-count": false,
+    "object-literal-key-quotes": false,
+    "cyclomatic-complexity": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "src/**/*.spec.ts",
+      "**/*.d.ts"
+    ]
+  }
+}

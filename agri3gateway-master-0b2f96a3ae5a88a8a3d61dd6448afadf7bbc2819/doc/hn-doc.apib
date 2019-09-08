@@ -1,0 +1,494 @@
+FORMAT: 1A
+HOST: https://hznj-dev.gagogroup.cn/api/v4
+
+# Group 地块
+
+## 地块统计 [/lands/statistic]
+
+### 统计所有地块的数量面积 [GET]
+
++ Response 200 (application/json)
+
+            {
+                "count": 1068,
+                "area": 3022.8                       
+            }
+
+## 地块查询 [/lands{?id,name,crop,minArea,maxArea}]
+
+### 根据参数查询地块 [GET]
+
++ Parameters
+    + id: 1 (number,optional) - 地块id
+    + name: 'land1' (string,optional) - 地块名称
+    + crop: '玉米' (string,optional) - 作物名称
+    + minArea: 10 (number,optional) - 最小面积
+    + maxArea: 50 (number,optional) - 最大面积
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "ids": [ 1, 13, 22 ],
+                "code": 200
+            }
+        }
+
+## 地块CRUD [/lands/{landId}]
+
+### 查询地块信息 [GET]
+
++ Parameters
+    + landId: 1 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+                "id": 1,
+                "name": "land1",
+                "serialNum": "HZ0001",      // 地块编号
+                "area": 100,                // 面积
+                "perimeter": 280,           // 周长
+                "createdPerson": "张三",      // 创建人
+                "createdDate": "2018-06-15T16:00:00.000Z",  // 创建时间
+                "crop": "玉米",              // 作物
+                "department": "农田水利",    // 所属学院
+                "memo": "坡向不好"         // 地块备注
+        }
+
+### 创建地块 [POST]
+
++ Request (application/json)
+
+        {
+            "area": 100,                // 面积
+            "perimeter": 280,           // 周长
+            "createdPerson": "张三",      // 创建人
+            "geojson": {"type": "Feature", "geometry": {"type": "Point", "coordinates": [125.6, 10.1] }, "properties": {"name": "Dinagat Islands"} }  // geojson
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "id": 3,
+            "serialNum": "HZ0003",      // 地块编号
+            "name": null,
+            "area": 100,                // 面积
+            "perimeter": 280,           // 周长
+            "createdPerson": "张三",      // 创建人
+            "createdDate": "2018-06-20T16:00:00.000Z",  // 创建时间
+            "crop": null,              // 作物
+            "department": null,    // 所属学院
+            "memo": null         // 地块备注
+        }
+
+### 修改地块信息 [PUT]
+
++ Parameters
+    + landId: 3 (number) - 地块id
+
++ Request (application/json)
+
+        {
+            "name": "land1",
+            "crop": "玉米",              // 作物
+            "department": "农田水利",    // 所属学院
+            "memo": "坡向不好"        // 地块备注
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "id": 3,
+            "serialNum": "HZ0003",      // 地块编号
+            "name": "land1",
+            "area": 100,                // 面积
+            "perimeter": 280,           // 周长
+            "createdPerson": "张三",      // 创建人
+            "createdDate": "2018-06-20T16:00:00.000Z",  // 创建时间
+            "crop": "玉米",              // 作物
+            "department": "农田水利",    // 所属学院
+            "memo": "坡向不好"         // 地块备注
+        }
+
+### 删除地块 [DELETE]
+
++ Parameters
+    + landId: 1 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 1,
+                "code": 200
+            }
+        }
+
+
+# Group 农事
+
+## 农事 [/farmworks/land/{landId}]
+
+### 查询某个地块的所有农事 [GET]
+
++ Parameters
+    + landId: 2 (number) - 地块id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "land": {
+                    "id": "2",
+                    "serialNum": "HN0002",
+                    "name": null,
+                    "area": "812.897493869",
+                    "perimeter": "117.145853034",
+                    "createdPerson": null,
+                    "createdDate": null,
+                    "crop": null,
+                    "department": null,
+                    "memo": null
+                },
+                "farmworks": [
+                    {
+                        "id": "4",
+                        "type": "整地",
+                        "workingAt": "2018-06-18T16:00:00.000Z",
+                        "completedBy": "张三",
+                        "landId": 2,
+                        "memo": "育苗顺利。"
+                    },
+                    {
+                        "id": "5",
+                        "type": "整地",
+                        "workingAt": "2018-06-18T16:00:00.000Z",
+                        "completedBy": "张三",
+                        "landId": 2,
+                        "memo": null
+                    }
+                ],
+                "code": 200
+            }
+        }
+
+
+## 农事CRUD [/farmworks/{id}]
+
+### 根据ID查询农事 [GET]
+好像用不到
+
++ Parameters
+    + id: 1 (number) - 农事id
+
++ Response 200 (application/json)
+
+            {
+                "id": 1,
+                "type": "播种",                         //农事类型
+                "workingAt": "2018-05-01",             //作业时间 
+                "landId": [1, 2, 3, 4, 5],             //作业地块
+                "completedBy": "张三",                  //完成人
+                "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+            }
+
+### 创建农事 [POST]
+
++ Request (application/json)
+
+        {
+            "type": "播种",                         //农事类型
+            "workingAt": "2018-05-01",             //作业时间 
+            "landId": [1, 2, 3],             //作业地块
+            "completedBy": "张三",                  //完成人
+            "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "ids": [ 12, 13, 14 ],
+                "code": 200
+            }
+        }
+
+### 修改农事 [PUT]
+界面没有修改图标，无法确定修改规则，是单条还是按地块
+
++ Parameters
+    + id: 1 (number) - 农事id
+
++ Request (application/json)
+
+        {
+            "type": "播种",                         //农事类型
+            "workingAt": "2018-05-01",             //作业时间 
+            "landId": 1,                           //作业地块
+            "completedBy": "张三",                  //完成人
+            "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+        }
+
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "farmwork": {
+                    "id": 1,
+                    "type": "播种",                         //农事类型
+                    "workingAt": "2018-05-01",             //作业时间 
+                    "landId": 1,                           //作业地块
+                    "completedBy": "张三",                  //完成人
+                    "memo": "这些土地肥沃，播种起来很合适。"    //农事备注
+                },
+                "code": 200
+            }
+        }
+
+
+### 删除农事 [DELETE]
+
++ Parameters
+    + id: 1 (number) - 农事id
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": 1,
+                "code": 200
+            }
+        }
+
+## 根据条件查询农事 [/farmworks{?type,crop,completedBy,start,end}]
+
+### 按参数查询农事 [GET]
+
++ Parameters
+    + type: "播种" (string,optional)         - 农事类型
+    + crop: '玉米' (string,optional)         - 作物名称
+    + completedBy: '张三' (string,optional)  - 地块名称
+    + start: "2018-05-01" (string,optional)   - 开始时间
+    + end: "2018-06-01" (string,optional)     - 结束时间
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "ids": [ 1, 13, 22 ],
+                "code": 200
+            }
+        }
+
+
+
+
+
+
+
+
+
+# Group 农机
+
+## 基础信息采集 [/agri-api/baseInfo]
+
+### 分页获取农机列表数据 [POST]
+
++ Request (application/json)
+
+        {
+            pageNum:1,
+            pageSize:10 ,
+            terminalCode: "16192694073" // 终端号码
+        }
+
++ Response 200 (application/json)
+
+            {
+                "code":0,
+                "message":"数据获取成功",
+                "data":[{
+                    "groupName":"广西壮族自治区/防城港市/上思县/创元农机合作社",
+                    "ownerName":"王飞",
+                    "ownerPhone":"13481746008", 
+                    "address":"上思县思阳镇昌墩村",
+                    "plateNumber":"王飞 1204",
+                    "machineType":"1", 
+                    "machineBrand":"迪尔",
+                    "machineModel":"1204",
+                    "machinePower":"88.000000", 
+                    "factoryNumber":"1204",
+                    "purchaseTime":"2017-02-01",
+                    "defaultToolType":"0",
+                    "defaultToolWidth":"2.000000",
+                    "optionJobType":"0,4",
+                    "terminalCode":"16192694073", 
+                    "terminalModel":"BDI-2P25",
+                    "installTime":"2017-02-18",
+                    "simNumber":"14793800963"
+                    }]
+            }
+
+## 作业状态采集 [/agri-api/workCondition]
+
+### 查询某一台农机的工作状态 [POST]
+
++ Request (application/json)
+
+        {
+            "terminalCode":"16192701382"
+        }
+
++ Response 200 (application/json)
+
+            {
+                "code":0,
+                "message":"数据获取成功",
+                "data":{
+                    "groupName":"辽宁省/阜新市/阜新蒙古族自 治县/新民镇/润田农机合作社",
+                    "ownerName":"李鹏云",
+                    "ownerPhone":"15941866229", 
+                    "plateNumber":"辽 0964467",
+                    "terminalCode":"16192701382",
+                    "machineType":"1", 
+                    "deviceTime":"2018-04-28 04:09:30",
+                    "machineCondition":"1",
+                    "lon":"121.7200160000", 
+                    "lat":"41.9542690000",
+                    "toolWidth":"2.500000",
+                    "machineDeep":"29", 
+                    "machineSpeed":"56.000000",
+                    "machineDirec":"338.000000", 
+                    "fuelConsump":20,"miles":87,
+                    "aquisitionTime":"2018-04-28 04:09:29"
+                    }
+            }
+
+## 历史轨迹查询 [/agri-api/workTrace]
+
+### 获取某台农机特定时间段内轨迹数据 [POST]
+
++ Request (application/json)
+
+        {"terminalCode":"16192701382","jobBeginTime":"2018-04-27 00:00:00", "jobEndTime":"2018-04-27 23:59:59"}
+
++ Response 200 (application/json)
+
+            {
+                "code":0,
+                "message":"数据获取成功",
+                "data":{
+                    "deviceTime":"2018-04-28 04:09:30",
+                    "serverTime":"2018-04-28 04:09:29",
+                    "longitude":"121.7200160000",
+                    "latitude":"41.9542690000",
+                    "jobDepth ":"29"
+                    }
+            }
+
+
+## 作业照片查询 [/agri-api/photoList]
+
+### 获取某台农机特定时间段内照片数据 [POST]
+
++ Request (application/json)
+
+        {"terminalCode":"16192701382","jobBeginTime":"2018-04-27 00:00:00", "jobEndTime":"2018-04-27 23:59:59"}
+
++ Response 200 (application/json)
+
+            {
+                "code":0,
+                "message":"数据获取成功",
+                "data":[{
+                    "time":"2018-04-28 04:09:30",
+                    "serverTime":"2018-04-28 04:09:34",
+                    " photo ":" http:// 58.213.150.68:11995/machinephotos/ComServerJS/201805/1000000008887/100000000 8887.1525104117257.9014.jpg "
+                }]
+            }
+
+## 作业信息采集 [/agri-api/jobInfo]
+
+### 获取某台农机特定时间耕作面积信息 [POST]
+
++ Request (application/json)
+
+        {"terminalCode":"16192701382","jobBeginTime":"2018-04-27 00:00:00", "jobEndTime":"2018-04-27 23:59:59"}
+
++ Response 200 (application/json)
+
+            {
+                "code":"0",
+                "message":"成功",
+                "data":[{
+                    "areaId":"1067830",
+                    "plateNumber":"王飞1204","jobTime":"2017-02-23",
+                    "jobStartTime":"2017-02-23 03:35:23",
+                    "jobEndTime":"2017-02-23 04:16:07",
+                    "jobType":"4",
+                    "jobArea":"1.680000",
+                    "averDeep":"41.000000",
+                    "jobWidth":"3.000000",
+                    "passRate":"0.000000000000",
+                    "address":"广西壮族自治区防城港市上思县国有昌菱农场堡垒山"
+                    }]
+            }
+
+## 地块数据采集 [/agri-api/areaInfo]
+
+### 获取特定地块 ID 的地块数据 [POST]
+
++ Request (application/json)
+
+        {"areaId":"3114531"}
+
++ Response 200 (application/json)
+
+            {
+                "code":"0",
+                "message":"成功",
+                "data": "[{\"lon\":\"107.8722178888889\",\"lat\":\"22.131497444444445\"},{\"lon\":\"107.87220466666668\",\"lat\":\"22.131477833333335\"}]"
+            }
+
+## 作业汇总数据采集 [/agri-api/areaSum]
+
+### 获取所有农机特定时间段内的作业总面积 [POST]
+
++ Request (application/json)
+
+        {"jobStartTime":"","jobEndTime":"2018-12-31 23:59:59"}
+
++ Response 200 (application/json)
+
+            {"code":"0","message":"成功","data":{"finishArea":"548306.07","passArea":"544507.75","unpassArea ":"3798.32"}}
+
+
+## 农机基础信息修改 [/agri-api/machineInfo]
+
+### 提交某台农机的最新基础信息，对基础数据进行修改 [POST]
+
++ Request (application/json)
+
+        {"groupName":"广西壮族自治区/防城港市/上思县/创元农机合作社","ownerName":"王飞 ","ownerPhone":"13481746008","address":" 上 思 县 思 阳 镇 昌 墩 村 ","plateNumber":" 王 飞 1204","machineType":"1","machineBrand":"迪尔","machineModel":"1204","machinePower":"88.000000","factoryNumber":"1204","purchaseTime":"2017-02-01","defaultToolType":"0","defaultToolWidth":"2.000000","optionJobType":"0,4"," terminalCode":"16192694073","terminalModel":"BDI-2P25","installTime":"2017-02-18", "simNumber":"14793800963"}
+
++ Response 200 (application/json)
+
+            {"code":0,"message":"数据修改成功","data":{"groupName":"广西壮族自治区/防城港市/上 思县/创元农机合作社","ownerName":"王飞","ownerPhone":"13481746008", "address":"上思县思阳镇昌墩村","plateNumber":"王飞 1204","machineType":"1", "machineBrand":"迪尔","machineModel":"1204","machinePower":"88.000000", "factoryNumber":"1204","purchaseTime":"2017-02-01","defaultToolType":"0", "defaultToolWidth":"2.000000","optionJobType":"0,4","terminalCode":"16192694073", "terminalModel":"BDI-2P25","installTime":"2017-02-18","simNumber":"14793800963"}}
+
+
+## 终端参数信息修改 [/agri-api/machineInfo]
+
+### 提交某台农机终端作业最新参数信息 [POST]
+
++ Request (application/json)
+
+        { "terminalCode":"16192701382", "takePhoto":"1", "uploadRate":"3"}
+
++ Response 200 (application/json)
+
+            {"code":"0","message":"设置成功","data":""}

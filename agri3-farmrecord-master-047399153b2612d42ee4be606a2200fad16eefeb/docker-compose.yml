@@ -1,0 +1,25 @@
+version: '3'
+services:
+  agri3farm:
+    restart: always
+    image: harbor.gagogroup.cn/agri/agri3-farmrecord:1.1.8
+    environment:
+      NODE_ENV: production
+      DB: pg
+      DB_USER: postgres
+      DB_PASSWORD: Pg2018@Gago.
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_SCHEMA: public
+    ports:
+      - "3012:3000"
+    links:
+      - postgres
+  postgres:
+    restart: always
+    image: "harbor.gagogroup.cn/agri/pgagri3:latest"
+    environment:
+      POSTGRES_PASSWORD: Pg2018@Gago.
+      POSTGRES_USER: postgres
+      PGDATA: "/var/lib/postgresql/data/pgdata"

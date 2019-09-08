@@ -1,0 +1,32 @@
+version: '3'
+services:
+  agri3lands:
+    restart: always
+    image: harbor.gagogroup.cn/agri/agri3-lands:1.1.5
+    environment:
+      NODE_ENV: production
+      DB: pg
+      DB_USER: postgres
+      DB_PASSWORD: Pg2018@Gago.
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_SCHEMA: public
+      REDIS_HOST: redis
+    ports:
+      - "3011:3000"
+    links:
+      - redis
+    depends_on:
+      - redis
+  redis:
+    image: redis:4.0.8-alpine
+    ports:
+      - "6380:6379"
+  postgres:
+    restart: always
+    image: "harbor.gagogroup.cn/agri/pgagri3:latest"
+    environment:
+      POSTGRES_PASSWORD: Pg2018@Gago.
+      POSTGRES_USER: postgres
+      PGDATA: "/var/lib/postgresql/data/pgdata"
